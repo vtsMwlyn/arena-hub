@@ -12,28 +12,31 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
+        <div class="min-h-screen bg-white">
+            <nav class="bg-white border-b-2 border-cyan-400">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
+                            <div class="shrink-0 flex items-center text-3xl font-semibold gap-2">
+                                <i class="bi bi-grid-fill text-cyan-500"></i>
+                                <h1><span>Arena</span><span class="text-cyan-500">Hub</span></h1>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    About
                                 </NavLink>
                                 <NavLink :href="route('posts.index')" :active="route().current('posts.index')">
-                                    Posts
+                                    Courts
+                                </NavLink>
+                                <NavLink :href="route('posts.index')" :active="route().current('posts.index')">
+                                    All Bookings
+                                </NavLink>
+                                <NavLink :href="route('posts.index')" :active="route().current('posts.index')">
+                                    My Bookings
                                 </NavLink>
                             </div>
                         </div>
