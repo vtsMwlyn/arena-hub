@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CourtController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
 
 // Post CRUD routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
