@@ -33,6 +33,7 @@
                             <th class="text-start border border-slate-400 px-4 py-2">Address</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Operational Days</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Operational Hours</th>
+                            <th class="text-start border border-slate-400 px-4 py-2">Available Sports</th>
                         </thead>
 
                         <tbody>
@@ -42,6 +43,11 @@
                                 <td class="border border-slate-400 px-4 py-2">{{ court.address }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ court.open.substring(0, 5) }} - {{ court.close.substring(0, 5) }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ getOperationalDays(court.operational_days).firstDay }} - {{ getOperationalDays(court.operational_days).lastDay }}</td>
+                                <td class="border border-slate-400 px-4 py-2">
+                                    <ul class="list-disc list-inside">
+                                        <li v-for="(sport, index) in JSON.parse(court.categories)" :key="index">{{ sport }}</li>
+                                    </ul>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
