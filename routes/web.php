@@ -4,7 +4,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourtController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -37,7 +39,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+// Courts
 Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
+
+// Bookings
+Route::get('/all-bookings', [BookingController::class, 'index'])->name('all-bookings.index');
+Route::get('/my-bookings', [UserController::class, 'my_bookings'])->name('my-bookings.index');
+
 
 // Post CRUD routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
