@@ -39,6 +39,9 @@ Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
 Route::middleware(['auth', 'admin'])->group(function(){
     Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create');
     Route::post('/courts/store', [CourtController::class, 'store'])->name('courts.store');
+    Route::get('/courts/{court}/edit', [CourtController::class, 'edit'])->name('courts.edit');
+    Route::put('/courts/{court}/edit', [CourtController::class, 'update'])->name('courts.update');
+    Route::delete('/courts/{court}/delete', [CourtController::class, 'destroy'])->name('courts.destroy');
 });
 
 // Bookings

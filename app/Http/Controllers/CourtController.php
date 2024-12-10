@@ -38,4 +38,35 @@ class CourtController extends Controller
 
         return redirect()->route('courts.index');
     }
+
+    public function edit(Court $court){
+        return Inertia::render('Courts/Edit', [
+            "court" => $court
+        ]);
+    }
+
+    public function update(Request $request, Court $court){
+        $validated = $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'open' => 'required',
+            'closed' => 'required',
+            'operational_days' => 'required',
+            'categories' => 'required',
+            'rent_per_hour' => 'required|min:0|not_in:0',
+        ]);
+
+        $validated['operational_days'] = json_encode($validated['operational_days']);
+        $validated['categories'] = json_encode($validated['categories']);
+
+        $court->update($validated);
+
+        return redirect()->route('courts.index');
+    }
+
+    public function destroy(Court $court){
+        $court->delete();
+
+        return redirect()->route('courts.index');
+    }
 }
