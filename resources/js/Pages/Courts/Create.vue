@@ -9,8 +9,8 @@
     const form = useForm({
         name: '',
         address: '',
-        open: '',
-        closed: '',
+        open: '00:00',
+        closed: '00:00',
         operational_days: [],
         categories: [],
         rent_per_hour: 0,
@@ -39,6 +39,20 @@
 
     const storeCourt = () => {
         form.post(route('courts.store'));
+    };
+
+    const showPicker = (event) => {
+        try {
+            if (event.target.showPicker) {
+                event.target.showPicker(); // Explicitly trigger the time picker
+            } else {
+                event.target.click(); // Fallback for older browsers
+            }
+        } catch (error) {
+            if (error.name !== 'NotAllowedError') {
+                console.error('Unexpected error:', error);
+            }
+        }
     };
 </script>
 
@@ -87,6 +101,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.open"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.open" />
@@ -100,6 +116,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.closed"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.closed" />

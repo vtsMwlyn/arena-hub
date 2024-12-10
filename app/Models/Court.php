@@ -18,4 +18,18 @@ class Court extends Model
     public function bookings(){
         return $this->hasMany(Booking::class);
     }
+
+    public function scopeFilter($query, array $filters){
+		$query->when($filters["search"] ?? false, function($query, $search){
+			return $query->where(function($query) use($search){
+				$query->where("name", "like", "%" . $search . "%");
+			});
+		});
+
+        $query->when($filters["category"] ?? false, function($query, $category){
+			return $query->where(function($query) use($category){
+				$query->where("categories", "like", "%" . $category . "%");
+			});
+		});
+	}
 }

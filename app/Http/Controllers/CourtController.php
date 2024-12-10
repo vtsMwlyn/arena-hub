@@ -11,8 +11,7 @@ class CourtController extends Controller
 {
     public function index(){
         return Inertia::render('Courts/Index', [
-            "courts" => Court::all(),
-            "is_admin" => (Auth::user()->role == "admin")? true : false
+            "courts" => Court::filter(request(['search', 'category']))->get()
         ]);
     }
 
@@ -36,12 +35,15 @@ class CourtController extends Controller
 
         Court::create($validated);
 
-        return redirect()->route('courts.index');
+        return redirect()->route('courts.index')->with('success', 'Successfully added a new court.');
     }
 
     public function show(Court $court){
+        $bookings = $court->bookings()->filter(request(['search']))->with('booker')->get();
+
         return Inertia::render('Courts/Show', [
-            "court" => $court->load('bookings.booker')
+            "court" => $court,
+            "bookings" => $bookings
         ]);
     }
 
@@ -67,12 +69,12 @@ class CourtController extends Controller
 
         $court->update($validated);
 
-        return redirect()->route('courts.index');
+        return redirect()->route('courts.index')->with('success', 'Successfully edited the court.');
     }
 
     public function destroy(Court $court){
         $court->delete();
 
-        return redirect()->route('courts.index');
+        return redirect()->route('courts.index')->with('warning', 'Successfully deleted the court.');
     }
 }

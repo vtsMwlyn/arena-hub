@@ -7,12 +7,14 @@
     import { Head, useForm, usePage } from '@inertiajs/vue3';
 
     const { props } = usePage();
+    console.log(props);
     const court = props.court;
+    const flashMessage = props.flash || null;
 
     const form = useForm({
         date: '',
-        start_time: '',
-        end_time: '',
+        start_time: '00:00',
+        end_time: '00:00',
         category: '',
         people: 0,
     });
@@ -26,6 +28,20 @@
         optionsCategories.push({ id: index, label: ctg, value: ctg });
     }
 
+    const showPicker = (event) => {
+        try {
+            if (event.target.showPicker) {
+                event.target.showPicker(); // Explicitly trigger the time picker
+            } else {
+                event.target.click(); // Fallback for older browsers
+            }
+        } catch (error) {
+            if (error.name !== 'NotAllowedError') {
+                console.error('Unexpected error:', error);
+            }
+        }
+    };
+
     const storeBooking = () => {
         form.post(route('bookings.store', { court: court.id }));
     };
@@ -38,9 +54,13 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden p-6">
-                    <h2 class="text-xl font-bold mb-6">New Booking</h2>
+                    <h2 class="text-xl font-bold mb-3">New Booking</h2>
 
-                    <form @submit.prevent="storeBooking">
+                    <div v-if="$page.props.flash.error" class="bg-red-700 text-white px-4 py-2 rounded-lg font-semibold">
+                        {{ $page.props.flash.error }}
+                    </div>
+
+                    <form @submit.prevent="storeBooking" class="mt-6">
                         <div>
                             <InputLabel for="date" value="Date" />
 
@@ -49,7 +69,8 @@
                                 type="date"
                                 class="mt-1 block w-full"
                                 v-model="form.date"
-                                autofocus
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.date" />
@@ -63,6 +84,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.start_time"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.start_time" />
@@ -76,6 +99,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.end_time"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.end_time" />

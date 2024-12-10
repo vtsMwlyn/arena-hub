@@ -18,4 +18,12 @@ class Booking extends Model
     public function court(){
         return $this->belongsTo(Court::class);
     }
+
+    public function scopeFilter($query, array $filters){
+		$query->when($filters["search"] ?? false, function($query, $search){
+			return $query->where(function($query) use($search){
+				$query->where("category", "like", "%" . $search . "%");
+			});
+		});
+	}
 }

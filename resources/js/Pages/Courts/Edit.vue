@@ -43,6 +43,20 @@
     const updateCourt = () => {
         form.put(route('courts.update', {court: court.id}));
     };
+
+    const showPicker = (event) => {
+        try {
+            if (event.target.showPicker) {
+                event.target.showPicker(); // Explicitly trigger the time picker
+            } else {
+                event.target.click(); // Fallback for older browsers
+            }
+        } catch (error) {
+            if (error.name !== 'NotAllowedError') {
+                console.error('Unexpected error:', error);
+            }
+        }
+    };
 </script>
 
 <template>
@@ -90,6 +104,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.open"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.open" />
@@ -103,6 +119,8 @@
                                 type="time"
                                 class="mt-1 block w-full"
                                 v-model="form.closed"
+                                @click="showPicker"
+                                @focus="showPicker"
                             />
 
                             <InputError class="mt-2" :message="form.errors.closed" />

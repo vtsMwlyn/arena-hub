@@ -1,13 +1,16 @@
 <script setup>
 import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3'
 
 const showingNavigationDropdown = ref(false);
+
+const { props } = usePage();
+const isAdmin = props.auth.user.role == 'admin' ? true : false;
+
 </script>
 
 <template>
@@ -32,7 +35,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('courts.index')" :active="route().current('courts.index')">
                                     Courts
                                 </NavLink>
-                                <NavLink :href="route('bookings.index')" :active="route().current('bookings.index')">
+                                <NavLink v-if="!isAdmin" :href="route('bookings.index')" :active="route().current('bookings.index')">
                                     My Bookings
                                 </NavLink>
                             </div>

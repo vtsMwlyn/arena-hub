@@ -13,6 +13,25 @@
             Inertia.delete(route('bookings.destroy', { booking: id }));
         }
     }
+
+    function calculateSubtotal(date, startTime, endTime, rent) {
+        // Convert start and end time strings to Date objects
+        const start = new Date(`${date}T${startTime}`);
+        const end = new Date(`${date}T${endTime}`);
+
+        // Calculate the difference in milliseconds
+        const diffInMillis = end.getTime() - start.getTime();
+
+        // Check if the start time is earlier than the end time
+        if (diffInMillis < 0) {
+            return 'Invalid time range';
+        }
+
+        // Convert milliseconds to hours and round to 2 decimal places
+        const diffInHours = (diffInMillis / (1000 * 60 * 60)).toFixed(2); // Rounded to 2 decimal places
+
+        return diffInHours * rent;
+    }
 </script>
 
 <template>
@@ -22,7 +41,15 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden p-6">
-                    <h2 class="text-xl font-bold mb-6">My Bookings</h2>
+                    <h2 class="text-xl font-bold mb-3">My Bookings</h2>
+
+                    <div v-if="$page.props.flash.success" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold">
+                        {{ $page.props.flash.success }}
+                    </div>
+
+                    <div v-if="$page.props.flash.warning" class="bg-yellow-500 px-4 py-2 rounded-lg font-semibold">
+                        {{ $page.props.flash.warning }}
+                    </div>
 
                     <table class="w-full mt-6">
                         <thead>
@@ -32,6 +59,7 @@
                             <th class="text-start border border-slate-400 px-4 py-2">Court</th>
                             <th class="text-start border border-slate-400 px-4 py-2">People</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Sport</th>
+                            <th class="text-start border border-slate-400 px-4 py-2">Subtotal</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Actions</th>
                         </thead>
 
@@ -43,6 +71,7 @@
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.court.name }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.people }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.category }}</td>
+                                <td class="border border-slate-400 px-4 py-2">{{ calculateSubtotal(booking.date, booking.start_time, booking.end_time, booking.court.rent_per_hour) }}</td>
                                 <td class="border border-slate-400 px-4 py-2">
                                     <div class="flex w-full gap-3">
                                         <button @click="deleteBooking(booking.id)" class="bg-red-600 text-white px-4 py-2 rounded-lg">Cancel</button>

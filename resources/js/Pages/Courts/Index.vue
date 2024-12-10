@@ -1,13 +1,21 @@
 <script setup>
     import AnchorButton from '@/Components/AnchorButton.vue';
+    import TextInput from '@/Components/TextInput.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    
     import { Head, usePage } from '@inertiajs/vue3';
     import { Inertia } from '@inertiajs/inertia';
+    import { ref } from 'vue';
 
-    // Access posts data passed as props
+    // Access courts data passed as props
     const { props } = usePage();
     const courts = props.courts;
-    const isAdmin = props.is_admin;
+    const isAdmin = props.auth.user.role == 'admin' ? true : false;
+
+    const filters = ref({
+        search: ''
+    });
 
     // Methods
     const getOperationalDays = (operationalDays) => {
@@ -23,6 +31,12 @@
             Inertia.delete(route('courts.destroy', { court: id }));
         }
     }
+
+    const submitSearch = () => {
+        Inertia.get(route('courts.index'), filters.value, {
+            preserveState: true, // Preserve state between requests
+        });
+    }
 </script>
 
 <template>
@@ -32,9 +46,27 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden p-6">
-                    <h2 class="text-xl font-bold mb-6">All Courts</h2>
+                    <div class="flex w-full justify-between items-center">
+                        <h2 class="text-xl font-bold mb-3">All Courts</h2>
+                        <form @submit.prevent="submitSearch" class="flex items-center gap-x-3">
+                            <TextInput
+                                v-model="filters.search"
+                                type="text"
+                                placeholder="Search court..."
+                            />
+                            <PrimaryButton type="submit">Search</PrimaryButton>
+                        </form>
+                    </div>
 
-                    <AnchorButton :href="route('courts.create')">
+                    <div v-if="$page.props.flash.success" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold">
+                        {{ $page.props.flash.success }}
+                    </div>
+
+                    <div v-if="$page.props.flash.warning" class="bg-yellow-500 px-4 py-2 rounded-lg font-semibold">
+                        {{ $page.props.flash.warning }}
+                    </div>
+
+                    <AnchorButton v-if="isAdmin" :href="route('courts.create')" class="mt-4">
                         New Court
                     </AnchorButton>
 
@@ -45,8 +77,9 @@
                             <th class="text-start border border-slate-400 px-4 py-2">Address</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Operational Days</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Operational Hours</th>
+                            <th class="text-start border border-slate-400 px-4 py-2">Rent per Hour</th>
                             <th class="text-start border border-slate-400 px-4 py-2">Available Sports</th>
-                            <th v-if="isAdmin" class="text-start border border-slate-400 px-4 py-2">Actions</th>
+                            <th class="text-start border border-slate-400 px-4 py-2">Actions</th>
                         </thead>
 
                         <tbody>
@@ -56,16 +89,17 @@
                                 <td class="border border-slate-400 px-4 py-2">{{ court.address }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ court.open.substring(0, 5) }} - {{ court.closed.substring(0, 5) }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ getOperationalDays(court.operational_days).firstDay }} - {{ getOperationalDays(court.operational_days).lastDay }}</td>
+                                <td class="border border-slate-400 px-4 py-2">{{ court.rent_per_hour }}</td>
                                 <td class="border border-slate-400 px-4 py-2">
                                     <ul class="list-disc list-inside">
                                         <li v-for="(sport, index) in JSON.parse(court.categories)" :key="index">{{ sport }}</li>
                                     </ul>
                                 </td>
-                                <td v-if="isAdmin" class="border border-slate-400 px-4 py-2">
+                                <td class="border border-slate-400 px-4 py-2">
                                     <div class="flex w-full gap-3">
-                                        <a :href="route('courts.show', { court: court.id })" class="bg-green-600 text-white px-4 py-2 rounded-lg">View</a>
-                                        <a :href="route('courts.edit', { court: court.id })" class="bg-yellow-500 text-black px-4 py-2 rounded-lg">Edit</a>
-                                        <button @click="deleteCourt(court.id)" class="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
+                                        <AnchorButton :href="route('courts.show', { court: court.id })" class="bg-green-600 text-white px-4 py-2 rounded-lg">View</AnchorButton>
+                                        <AnchorButton v-if="isAdmin" :href="route('courts.edit', { court: court.id })" class="bg-yellow-500 text-black px-4 py-2 rounded-lg">Edit</AnchorButton>
+                                        <PrimaryButton v-if="isAdmin" @click="deleteCourt(court.id)" class="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</PrimaryButton>
                                     </div>
                                 </td>
                             </tr>

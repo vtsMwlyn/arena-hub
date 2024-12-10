@@ -1,12 +1,21 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import TextInput from '@/Components/TextInput.vue';
     import AnchorButton from '@/Components/AnchorButton.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+
     import { Head, usePage } from '@inertiajs/vue3';
+    import { ref } from 'vue';
+    import { Inertia } from '@inertiajs/inertia';
 
     // Access posts data passed as props
     const { props } = usePage();
     const court = props.court;
-    const bookings = court.bookings;
+    const bookings = props.bookings;
+
+    const filters = ref({
+        search: '',
+    });
 
     // Methods
     const getOperationalDays = (operationalDays) => {
@@ -16,6 +25,20 @@
             lastDay: daysArray[daysArray.length - 1],
         };
     };
+
+    const submitSearch = () => {
+        Inertia.get(route('courts.show', { court: court.id }), filters.value, {
+            preserveState: true, // Preserve state between requests
+        });
+    }
+
+    let optionsCategories = [];
+    const categories = JSON.parse(court.categories);
+
+    for (const index in categories) {
+        const ctg = categories[index];
+        optionsCategories.push({ id: index, label: ctg, value: ctg });
+    }
 </script>
 
 <template>
@@ -61,7 +84,18 @@
                         New Booking
                     </AnchorButton>
 
-                    <h4 class="font-semibold mt-6 mb-2">All Bookings in This Court</h4>
+                    <div class="flex w-full justify-between items-center">
+                        <h4 class="font-semibold mt-6 mb-2">All Bookings in This Court</h4>
+                        <form @submit.prevent="submitSearch" class="flex items-center gap-x-3">
+                            <TextInput
+                                v-model="filters.search"
+                                type="search"
+                                placeholder="Search sport category..."
+                            />
+                            <PrimaryButton type="submit">Search</PrimaryButton>
+                        </form>
+                    </div>
+
                     <table class="w-full">
                         <thead>
                             <th class="text-start border border-slate-400 px-4 py-2">#</th>

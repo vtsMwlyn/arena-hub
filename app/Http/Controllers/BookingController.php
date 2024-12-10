@@ -32,17 +32,51 @@ class BookingController extends Controller
             'people' => 'required|min:0|not_in:0|numeric'
         ]);
 
+        $validated['start_time'] .= ':00';
+        $validated['end_time'] .= ':00';
+
+        $outside_of_operational_hour = false;
+        if($validated['start_time'] < $court->open || $validated['start_time'] > $court->closed){
+            $outside_of_operational_hour = true;
+        }
+        else if($validated['end_time'] < $court->open || $validated['end_time'] > $court->closed){
+            $outside_of_operational_hour = true;
+        }
+
+        if($outside_of_operational_hour){
+            return redirect()->back()->with('error', 'The selected time is out of operational hour.');
+        }
+
+        $already_booked = false;
+        $err = '';
+
+        foreach($court->bookings as $b){
+            if($b->category == $validated['category'] && $b->date == $request['date']){
+                if($validated['start_time'] > $b->start_time && $validated['start_time'] < $b->end_time) {
+                    $already_booked = true;
+                    $err = 'Someone already booked at that time (' . $b->booker->name . ' [' . $b->start_time . '-' . $b->end_time . ']' . '). ';
+                } else if($validated['end_time'] > $b->start_time && $validated['end_time'] < $b->end_time){
+                    $already_booked = true;
+                    $err = 'Someone already booked at that time (' . $b->booker->name . ' [' . $b->start_time . '-' . $b->end_time . ']' . '). ';
+                }
+            }
+        }
+
+        if($already_booked){
+            return redirect()->back()->with('error', $err);
+        }
+
         $validated['user_id'] = Auth::user()->id;
         $validated['court_id'] = $court->id;
 
         Booking::create($validated);
 
-        return redirect()->route('bookings.index');
+        return redirect()->route('bookings.index')->with('success', 'Successfully booked the court.');
     }
 
     public function destroy(Booking $booking){
         $booking->delete();
 
-        return redirect()->route('bookings.index');
+        return redirect()->route('bookings.index')->with('warning', 'Successfully cancelled the booking.');
     }
 }
