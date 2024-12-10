@@ -11,7 +11,7 @@ class CourtController extends Controller
 {
     public function index(){
         return Inertia::render('Courts/Index', [
-            "courts" => Court::filter(request(['search', 'category']))->get()
+            "courts" => Court::filter(request(['search', 'category']))->paginate(5)
         ]);
     }
 
@@ -39,7 +39,7 @@ class CourtController extends Controller
     }
 
     public function show(Court $court){
-        $bookings = $court->bookings()->filter(request(['search']))->with('booker')->get();
+        $bookings = $court->bookings()->filter(request(['search']))->with('booker')->paginate(3);
 
         return Inertia::render('Courts/Show', [
             "court" => $court,

@@ -3,7 +3,7 @@
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    
+
     import { Head, usePage } from '@inertiajs/vue3';
     import { Inertia } from '@inertiajs/inertia';
     import { ref } from 'vue';
@@ -37,6 +37,13 @@
             preserveState: true, // Preserve state between requests
         });
     }
+
+    const changePage = (url) => {
+        if (url) {
+            // Fetch the new page data using Inertia
+            Inertia.get(url, {}, { preserveState: true });
+        }
+    };
 </script>
 
 <template>
@@ -83,7 +90,7 @@
                         </thead>
 
                         <tbody>
-                            <tr v-for="(court, index) in courts" :key="court.id">
+                            <tr v-for="(court, index) in courts.data" :key="court.id">
                                 <td class="border border-slate-400 px-4 py-2">{{ index + 1 }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ court.name }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ court.address }}</td>
@@ -105,6 +112,24 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div class="pagination mt-6 flex items-center gap-x-4">
+                        <PrimaryButton
+                            @click="changePage(courts.prev_page_url)"
+                            :disabled="!courts.prev_page_url"
+                        >
+                            Previous
+                        </PrimaryButton>
+
+                        <span>Page {{ courts.current_page }} of {{ courts.last_page }}</span>
+
+                        <PrimaryButton
+                            @click="changePage(courts.next_page_url)"
+                            :disabled="!courts.next_page_url"
+                        >
+                            Next
+                        </PrimaryButton>
+                    </div>
                 </div>
 
             </div>

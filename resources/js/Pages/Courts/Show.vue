@@ -39,6 +39,14 @@
         const ctg = categories[index];
         optionsCategories.push({ id: index, label: ctg, value: ctg });
     }
+
+    const changePage = (url) => {
+        if (url) {
+            // Fetch the new page data using Inertia
+            Inertia.get(url, {}, { preserveState: true });
+        }
+    };
+
 </script>
 
 <template>
@@ -107,7 +115,7 @@
                         </thead>
 
                         <tbody>
-                            <tr v-for="(booking, index) in bookings" :key="booking.id">
+                            <tr v-for="(booking, index) in bookings.data" :key="booking.id">
                                 <td class="border border-slate-400 px-4 py-2">{{ index + 1 }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.date }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.start_time.substring(0, 5) }} - {{ booking.end_time.substring(0, 5) }}</td>
@@ -117,6 +125,26 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Pagination Links -->
+                    <div class="pagination mt-6 flex items-center gap-x-4">
+                        <PrimaryButton
+                            @click="changePage(bookings.prev_page_url)"
+                            :disabled="!bookings.prev_page_url"
+                        >
+                            Previous
+                        </PrimaryButton>
+
+                        <span>Page {{ bookings.current_page }} of {{ bookings.last_page }}</span>
+
+                        <PrimaryButton
+                            @click="changePage(bookings.next_page_url)"
+                            :disabled="!bookings.next_page_url"
+                        >
+                            Next
+                        </PrimaryButton>
+                    </div>
+
                 </div>
 
             </div>

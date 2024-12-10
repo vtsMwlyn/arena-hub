@@ -12,7 +12,7 @@ class BookingController extends Controller
 {
     public function index(){
         return Inertia::render('Bookings/Index', [
-            'bookings' => Booking::where("user_id", Auth::user()->id)->orderBy('date', 'asc')->orderBy('start_time', 'asc')->with(['booker', 'court'])->get()
+            'bookings' => Booking::where("user_id", Auth::user()->id)->orderBy('date', 'asc')->orderBy('start_time', 'asc')->with(['booker', 'court'])->paginate(5)
         ]);
     }
 
