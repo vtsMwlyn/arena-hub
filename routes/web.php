@@ -34,31 +34,27 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Courts
-Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
+// ===== Courts ===== //
+Route::get('/courts', [CourtController::class, 'index'])->name('courts.index')->middleware('auth');
+Route::get('/courts/{court}/show', [CourtController::class, 'show'])->name('courts.show')->middleware('auth');
 Route::middleware(['auth', 'admin'])->group(function(){
     Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create');
-    Route::post('/courts/store', [CourtController::class, 'store'])->name('courts.store');
+    Route::post('/courts/create', [CourtController::class, 'store'])->name('courts.store');
     Route::get('/courts/{court}/edit', [CourtController::class, 'edit'])->name('courts.edit');
     Route::put('/courts/{court}/edit', [CourtController::class, 'update'])->name('courts.update');
     Route::delete('/courts/{court}/delete', [CourtController::class, 'destroy'])->name('courts.destroy');
 });
 
-// Bookings
-Route::get('/all-bookings', [BookingController::class, 'index'])->name('all-bookings.index');
-Route::get('/my-bookings', [UserController::class, 'my_bookings'])->name('my-bookings.index');
-Route::middleware(['auth', 'admin'])->group(function(){
+// ===== Bookings ===== //
+// My bookings
+Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index')->middleware('auth');
 
-});
+// Book court via show court page
+Route::get('/bookings/{court}/create', [BookingController::class, 'create'])->name('bookings.create')->middleware('auth');
+Route::post('/bookings/{court}/create', [BookingController::class, 'store'])->name('bookings.store')->middleware('auth');
 
-
-// Post CRUD routes
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-Route::post('/posts/create', [PostController::class, 'store'])->name('posts.store');
-Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
-Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+// Cancel booking
+Route::delete('/bookings/{booking}/delete', [BookingController::class, 'destroy'])->name('bookings.destroy')->middleware('auth');
 
 
 require __DIR__.'/auth.php';

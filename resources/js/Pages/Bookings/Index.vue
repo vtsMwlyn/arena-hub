@@ -8,7 +8,11 @@
     const bookings = props.bookings;
 
     // Methods
-
+    const deleteBooking = (id) => {
+        if(confirm('Are you sure want to cancel this booking?')){
+            Inertia.delete(route('bookings.destroy', { booking: id }));
+        }
+    }
 </script>
 
 <template>
@@ -36,12 +40,12 @@
                                 <td class="border border-slate-400 px-4 py-2">{{ index + 1 }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.date }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.start_time.substring(0, 5) }} - {{ booking.end_time.substring(0, 5) }}</td>
-                                <td class="border border-slate-400 px-4 py-2">{{ booking.court.name }}</td> 
+                                <td class="border border-slate-400 px-4 py-2">{{ booking.court.name }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.people }}</td>
                                 <td class="border border-slate-400 px-4 py-2">{{ booking.category }}</td>
                                 <td class="border border-slate-400 px-4 py-2">
                                     <div class="flex w-full gap-3">
-                                        <button class="bg-red-600 text-white px-4 py-2 rounded-lg">Cancel</button>
+                                        <button @click="deleteBooking(booking.id)" class="bg-red-600 text-white px-4 py-2 rounded-lg">Cancel</button>
                                     </div>
                                 </td>
 

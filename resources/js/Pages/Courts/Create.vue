@@ -43,7 +43,7 @@
 </script>
 
 <template>
-    <Head title="New Court" />
+    <Head title="Courts" />
 
     <AuthenticatedLayout>
         <div class="py-12">

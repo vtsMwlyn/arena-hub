@@ -46,7 +46,7 @@
 </script>
 
 <template>
-    <Head title="Edit Court" />
+    <Head title="Courts" />
 
     <AuthenticatedLayout>
         <div class="py-12">

@@ -63,6 +63,7 @@
                                 </td>
                                 <td v-if="isAdmin" class="border border-slate-400 px-4 py-2">
                                     <div class="flex w-full gap-3">
+                                        <a :href="route('courts.show', { court: court.id })" class="bg-green-600 text-white px-4 py-2 rounded-lg">View</a>
                                         <a :href="route('courts.edit', { court: court.id })" class="bg-yellow-500 text-black px-4 py-2 rounded-lg">Edit</a>
                                         <button @click="deleteCourt(court.id)" class="bg-red-600 text-white px-4 py-2 rounded-lg">Delete</button>
                                     </div>

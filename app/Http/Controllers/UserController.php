@@ -9,9 +9,5 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function my_bookings(){
-        return Inertia::render('Bookings/Mine', [
-            'bookings' => Booking::where("user_id", Auth::user()->id)->orderBy('date', 'asc')->orderBy('start_time', 'asc')->with(['booker', 'court'])->get()
-        ]);
-    }
+    
 }

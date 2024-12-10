@@ -28,7 +28,7 @@ class CourtController extends Controller
             'closed' => 'required',
             'operational_days' => 'required',
             'categories' => 'required',
-            'rent_per_hour' => 'required|min:0|not_in:0',
+            'rent_per_hour' => 'required|min:0|not_in:0|numeric',
         ]);
 
         $validated['operational_days'] = json_encode($validated['operational_days']);
@@ -37,6 +37,12 @@ class CourtController extends Controller
         Court::create($validated);
 
         return redirect()->route('courts.index');
+    }
+
+    public function show(Court $court){
+        return Inertia::render('Courts/Show', [
+            "court" => $court->load('bookings.booker')
+        ]);
     }
 
     public function edit(Court $court){
