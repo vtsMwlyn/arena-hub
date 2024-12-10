@@ -21,31 +21,32 @@ use App\Http\Controllers\ProfileController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
 // Courts
 Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
+Route::middleware(['auth', 'admin'])->group(function(){
+    Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create');
+    Route::post('/courts/store', [CourtController::class, 'store'])->name('courts.store');
+});
 
 // Bookings
 Route::get('/all-bookings', [BookingController::class, 'index'])->name('all-bookings.index');
 Route::get('/my-bookings', [UserController::class, 'my_bookings'])->name('my-bookings.index');
+Route::middleware(['auth', 'admin'])->group(function(){
+
+});
 
 
 // Post CRUD routes

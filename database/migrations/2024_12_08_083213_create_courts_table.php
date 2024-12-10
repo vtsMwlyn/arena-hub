@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("address");
 
             $table->time("open");
-            $table->time("close");
+            $table->time("closed");
             $table->string("operational_days");
 
             $table->string("categories");

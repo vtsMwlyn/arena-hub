@@ -1,7 +1,6 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head, usePage } from '@inertiajs/vue3';
-    import { Inertia } from '@inertiajs/inertia';
 
     // Access posts data passed as props
     const { props } = usePage();
@@ -17,7 +16,7 @@
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div class="bg-white overflow-hidden p-6">
                     <h2 class="text-xl font-bold mb-6">All Bookings</h2>
 
                     <table class="w-full mt-6">
